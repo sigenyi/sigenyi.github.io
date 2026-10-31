@@ -358,6 +358,17 @@
             flex-shrink: 0;
         }
         .role-years { color: var(--white); }
+        .role-item { align-items: baseline; }
+        .role-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .role-note {
+            font-size: 0.78rem;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.5);
+        }
         .cert-status.done { color: var(--white); }
         .cert-status.wip {
             color: var(--grey-500);
@@ -607,7 +618,10 @@
                     <div class="about-card-title">8+ Years<br>in IT Ops</div>
                     <div class="role-list">
                         <div class="role-item">
-                            <span class="role-name">Jazz Imaging — Tech Support Specialist</span>
+                            <div class="role-info">
+                                <span class="role-name">Jazz Imaging — Tech Support Specialist</span>
+                                <span class="role-note">Built AI-assisted tools that cut RMA processing time up to 80% and new-hire ramp-up from 1 week to 2 days.</span>
+                            </div>
                             <span class="role-years">2026–Now</span>
                         </div>
                         <div class="role-item">
@@ -615,11 +629,17 @@
                             <span class="role-years">2025–26</span>
                         </div>
                         <div class="role-item">
-                            <span class="role-name">Google — Technical Ops Engineer</span>
+                            <div class="role-info">
+                                <span class="role-name">Google — Technical Ops Engineer</span>
+                                <span class="role-note">95% first-call resolution across 30+ tickets a day. Helped run the IT war room through a reduction in force.</span>
+                            </div>
                             <span class="role-years">2022–25</span>
                         </div>
                         <div class="role-item">
-                            <span class="role-name">Valley View SD — IT Support Staff & Specialist</span>
+                            <div class="role-info">
+                                <span class="role-name">Valley View SD — IT Support Staff & Specialist</span>
+                                <span class="role-note">District-wide device rollouts, vendor management, and COPPA/SOPPA student-privacy compliance.</span>
+                            </div>
                             <span class="role-years">2018–22</span>
                         </div>
                     </div>
