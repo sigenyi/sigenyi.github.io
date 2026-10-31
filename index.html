@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joel Ramirez</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Barlow:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #000;
+            --white: #fff;
+            --grey-100: #f0f0f0;
+            --grey-300: #999;
+            --grey-500: #555;
+            --grey-700: #1a1a1a;
+            --grey-800: #111;
+            --accent: #fff;
+            --nav-h: 72px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--black);
+            color: var(--white);
+            font-family: 'Barlow', sans-serif;
+            font-weight: 300;
+            overflow-x: hidden;
+            cursor: crosshair;
+        }
+
+        /* ── NOISE GRAIN OVERLAY ── */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.35;
+        }
+
+        /* ── HEADER ── */
+        header {
+            position: relative;
+            height: 100vh;
+            min-height: 600px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+        }
+
+        .header-photo-col {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-photo-col img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            filter: contrast(1.15) brightness(0.85) grayscale(0.2);
+            display: block;
+        }
+
+        /* vertical rule between columns */
+        .header-photo-col::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0;
+            width: 1px;
+            height: 100%;
+            background: rgba(255,255,255,0.12);
+        }
+
+        .header-text-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 60px 60px 60px 64px;
+            position: relative;
+            background: #000;
+        }
+
+
+        .header-eyebrow {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.25em;
+            color: var(--grey-300);
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(5rem, 8vw, 10rem);
+            line-height: 0.9;
+            letter-spacing: 0.02em;
+            color: var(--white);
+            margin-bottom: 40px;
+        }
+
+        .header-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border-top: 1px solid var(--grey-700);
+            padding-top: 28px;
+        }
+
+        .header-meta a {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--grey-300);
+            text-decoration: none;
+            letter-spacing: 0.1em;
+            transition: color 0.2s;
+        }
+        .header-meta a:hover { color: var(--white); }
+
+        /* scroll indicator */
+        .scroll-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.4;
+        }
+        .scroll-hint span {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+        .scroll-line {
+            width: 1px;
+            height: 40px;
+            background: white;
+            animation: growLine 1.5s ease-in-out infinite;
+        }
+        @keyframes growLine {
+            0%,100% { transform: scaleY(0.3); opacity: 0.3; }
+            50% { transform: scaleY(1); opacity: 1; }
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: var(--black);
+            border-top: 1px solid var(--grey-700);
+            border-bottom: 1px solid var(--grey-700);
+            display: flex;
+            height: var(--nav-h);
+        }
+
+        .nav-name {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.1rem;
+            letter-spacing: 0.12em;
+            color: var(--grey-500);
+            display: flex;
+            align-items: center;
+            padding: 0 48px 0 80px;
+        }
+
+        /* each tab takes an equal share of the full bar width */
+        .nav-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            border-left: 1px solid var(--grey-700);
+            color: var(--grey-300);
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.9rem;
+            letter-spacing: 0.15em;
+            cursor: crosshair;
+            transition: color 0.2s, background 0.2s;
+        }
+        .nav-btn:hover { color: var(--white); background: var(--grey-800); }
+        .nav-btn.active {
+            color: var(--black);
+            background: var(--white);
+        }
+
+        /* ── MAIN CONTENT ── */
+        main { min-height: 100vh; }
+
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+
+        /* ── ABOUT ── */
+        #about {
+            display: none;
+        }
+        #about.active {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: calc(100vh - var(--nav-h));
+        }
+
+        .about-left {
+            padding: 100px 80px;
+            border-right: 1px solid var(--grey-700);
+            display: flex;
+            flex-direction: column;
+            gap: 48px;
+        }
+
+        .section-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.3em;
+            color: var(--grey-500);
+            text-transform: uppercase;
+        }
+
+        .about-headline {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3.5rem, 5vw, 6rem);
+            line-height: 0.92;
+            letter-spacing: 0.02em;
+        }
+
+        .about-body {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 480px;
+        }
+
+        .about-body p {
+            font-size: 0.92rem;
+            line-height: 1.85;
+            color: var(--grey-300);
+            font-weight: 300;
+        }
+
+        .about-body p strong {
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .terminal-line {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            color: var(--grey-500);
+            margin-top: auto;
+            padding-top: 48px;
+            border-top: 1px solid var(--grey-700);
+        }
+        .terminal-line::after {
+            content: '▋';
+            animation: blink 1s step-end infinite;
+            color: var(--white);
+        }
+        @keyframes blink {
+            0%,100% { opacity: 1; } 50% { opacity: 0; }
+        }
+
+        .about-right {
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+        }
+
+        .about-card {
+            padding: 60px;
+            border-bottom: 1px solid var(--grey-700);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            transition: background 0.3s;
+        }
+        .about-card:last-child { border-bottom: none; }
+        .about-card:hover { background: var(--grey-800); }
+
+        .about-card-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 0.05em;
+        }
+
+        .about-card-content {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .skill-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--grey-700);
+        }
+        .skill-row:last-child { border-bottom: none; }
+
+        .skill-name {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--grey-300);
+            width: 180px;
+            flex-shrink: 0;
+        }
+
+        .skill-bar-track {
+            flex: 1;
+            height: 1px;
+            background: var(--grey-700);
+            position: relative;
+        }
+        .skill-bar-fill {
+            position: absolute;
+            left: 0; top: 0;
+            height: 100%;
+            background: var(--white);
+            transition: width 1.2s cubic-bezier(0.25, 0, 0, 1);
+        }
+
+        .cert-list, .role-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        .cert-item, .role-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--grey-700);
+        }
+        .cert-item:last-child, .role-item:last-child { border-bottom: none; }
+        .cert-name, .role-name {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            color: var(--grey-300);
+        }
+        .cert-status, .role-years {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+        .role-years { color: var(--white); }
+        .cert-status.done { color: var(--white); }
+        .cert-status.wip {
+            color: var(--grey-500);
+            animation: blink 2s step-end infinite;
+        }
+
+        /* ── PROJECTS ── */
+        #projects {
+            display: none;
+        }
+        #projects.active {
+            display: block;
+        }
+
+        .projects-header {
+            padding: 100px 80px 60px;
+            border-bottom: 1px solid var(--grey-700);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .projects-headline {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(4rem, 7vw, 8rem);
+            line-height: 0.9;
+            letter-spacing: 0.02em;
+        }
+
+        .projects-count {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.25em;
+            color: var(--grey-500);
+            text-transform: uppercase;
+        }
+
+        .projects-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .project-item {
+            padding: 60px;
+            border-right: 1px solid var(--grey-700);
+            border-bottom: 1px solid var(--grey-700);
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            min-height: 440px;
+            transition: background 0.3s;
+            cursor: crosshair;
+        }
+        .project-item:nth-child(2n) { border-right: none; }
+        .project-item:hover { background: var(--grey-800); }
+
+        .project-index {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.25em;
+            color: var(--grey-500);
+        }
+
+        .project-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2.5rem;
+            letter-spacing: 0.03em;
+            line-height: 1;
+        }
+
+        .project-desc {
+            font-size: 0.85rem;
+            line-height: 1.8;
+            color: var(--grey-300);
+            font-weight: 300;
+            flex: 1;
+        }
+
+        .project-link {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: var(--white);
+            text-decoration: none;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: gap 0.2s;
+        }
+        .project-link:hover { gap: 16px; }
+        .project-link::after { content: '→'; }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .tag {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--grey-500);
+            border: 1px solid var(--grey-700);
+            padding: 4px 10px;
+        }
+
+        .project-wip-badge {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.58rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--grey-500);
+            border: 1px solid var(--grey-700);
+            padding: 4px 10px;
+            display: inline-block;
+            align-self: flex-start;
+            animation: blink 2s step-end infinite;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--grey-700);
+            padding: 40px 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-copy {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.25em;
+            color: var(--grey-500);
+            text-transform: uppercase;
+        }
+
+        .footer-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            color: var(--grey-500);
+        }
+        .status-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--white);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%,100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.8); }
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            :root { --nav-h: 60px; }
+            header { grid-template-columns: 1fr; grid-template-rows: 55vw 1fr; height: auto; }
+            .header-photo-col::after { display: none; }
+            .header-text-col { padding: 48px 36px; }
+            .scroll-hint { display: none; }
+            h1 { font-size: 4rem; }
+            .nav-name { display: none; }
+            .nav-btn { font-size: 1.5rem; }
+            .nav-btn:first-of-type { border-left: none; }
+
+            #about.active { grid-template-columns: 1fr; }
+            .about-left { padding: 60px 36px; border-right: none; border-bottom: 1px solid var(--grey-700); }
+            .about-card { padding: 40px 36px; }
+
+            .projects-header { padding: 60px 36px 40px; flex-direction: column; align-items: flex-start; gap: 12px; }
+            .projects-list { grid-template-columns: 1fr; }
+            .project-item { border-right: none; padding: 40px 36px; min-height: auto; }
+            .project-item:nth-child(2n) { border-right: none; }
+
+            footer { padding: 32px 36px; flex-direction: column; gap: 12px; align-items: flex-start; }
+        }
+
+        /* ── ENTRANCE ANIMATIONS ── */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .fade-up.visible {
+            opacity: 1;
+            transform: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-photo-col">
+            <img src="displaypicture.gif" alt="Joel Ramirez">
+        </div>
+        <div class="header-text-col">
+
+            <p class="header-eyebrow">// IT 运维工程师 &nbsp;&nbsp; San Jose, CA</p>
+            <h1>JOEL<br>RAMIREZ</h1>
+            <div class="header-meta">
+                <a href="mailto:joelramirez@tutamail.com">joelramirez@tutamail.com</a>
+                <a href="https://linkedin.com/in/joro" target="_blank">linkedin.com/in/joro</a>
+            </div>
+        </div>
+        <div class="scroll-hint">
+            <span>scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </header>
+
+    <!-- NAV -->
+    <nav>
+        <span class="nav-name">J.RAMIREZ</span>
+        <button class="nav-btn active" data-section="about">About</button>
+        <button class="nav-btn" data-section="projects">Projects</button>
+    </nav>
+
+    <!-- MAIN -->
+    <main>
+
+        <!-- ABOUT -->
+        <section id="about" class="content-section active">
+            <div class="about-left">
+                <span class="section-label">001 — About</span>
+                <div class="about-headline">
+                    I FIX<br>WHAT<br>BREAKS.
+                </div>
+                <div class="about-body">
+                    <p>My passion is solving problems through technology. I’m fascinated by efficiency — finding smarter, more practical ways to make things work. As an IT Operations Engineer and former Google Technical Operations professional, I enjoy breaking down complex problems, understanding how systems work, and turning challenges into solutions.</p>
+                    <p>I’m a perpetual learner who enjoys staying active, playing basketball, and constantly pushing myself to improve, whether I’m working on technology, learning something new, or competing on the court.</p>
+                    <p>At the core of everything I do is curiosity, persistence, and a drive to make things work better.</p>
+                    <p><strong>Love makes everything work.</strong></p>
+                </div>
+                <div class="terminal-line">user@joel-ramirez:~$ </div>
+            </div>
+
+            <div class="about-right">
+                <!-- Experience snapshot -->
+                <div class="about-card fade-up">
+                    <span class="section-label">Experience</span>
+                    <div class="about-card-title">8+ Years<br>in IT Ops</div>
+                    <div class="role-list">
+                        <div class="role-item">
+                            <span class="role-name">Jazz Imaging — Tech Support Specialist</span>
+                            <span class="role-years">2026–Now</span>
+                        </div>
+                        <div class="role-item">
+                            <span class="role-name">Vagaro — Tech Support Rep</span>
+                            <span class="role-years">2025–26</span>
+                        </div>
+                        <div class="role-item">
+                            <span class="role-name">Google — Technical Ops Engineer</span>
+                            <span class="role-years">2022–25</span>
+                        </div>
+                        <div class="role-item">
+                            <span class="role-name">Valley View SD — IT Support Staff & Specialist</span>
+                            <span class="role-years">2018–22</span>
+                        </div>
+                    </div>
+                    <span class="section-label">Core Skills</span>
+                    <div class="about-card-content">
+                        <div class="skill-row">
+                            <span class="skill-name">Troubleshooting / RCA</span>
+                            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:0" data-width="90%"></div></div>
+                        </div>
+                        <div class="skill-row">
+                            <span class="skill-name">Linux · Mac · Windows</span>
+                            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:0" data-width="85%"></div></div>
+                        </div>
+                        <div class="skill-row">
+                            <span class="skill-name">Python / Automation</span>
+                            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:0" data-width="75%"></div></div>
+                        </div>
+                        <div class="skill-row">
+                            <span class="skill-name">PostgreSQL / APIs</span>
+                            <div class="skill-bar-track"><div class="skill-bar-fill" style="width:0" data-width="65%"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certs -->
+                <div class="about-card fade-up">
+                    <span class="section-label">Credentials</span>
+                    <div class="about-card-title">Education<br>& Certs</div>
+                    <div class="cert-list">
+                        <div class="cert-item">
+                            <span class="cert-name">Ashworth — A.S. CIS</span>
+                            <span class="cert-status done">2019–21</span>
+                        </div>
+                        <div class="cert-item">
+                            <span class="cert-name">CompTIA A+</span>
+                            <span class="cert-status done">✓</span>
+                        </div>
+                        <div class="cert-item">
+                            <span class="cert-name">CompTIA Network+</span>
+                            <span class="cert-status done">✓</span>
+                        </div>
+                        <div class="cert-item">
+                            <span class="cert-name">Google IT Support</span>
+                            <span class="cert-status done">✓</span>
+                        </div>
+                        <div class="cert-item">
+                            <span class="cert-name">Google AI Professional</span>
+                            <span class="cert-status done">✓</span>
+                        </div>
+                        <div class="cert-item">
+                            <span class="cert-name">Google Data Analysis with Python</span>
+                            <span class="cert-status done">✓</span>
+                        </div>
+                        <div class="cert-item">
+                            <span class="cert-name">CompTIA Security+</span>
+                            <span class="cert-status wip">In Progress</span>
+                        </div>
+                        <div class="cert-item">
+                            <span class="cert-name">LPI Linux Essentials</span>
+                            <span class="cert-status wip">In Progress</span>
+                        </div>
+                        <div class="cert-item">
+                            <span class="cert-name">IBM AI Engineering</span>
+                            <span class="cert-status wip">In Progress</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECTS -->
+        <section id="projects" class="content-section">
+            <div class="projects-header fade-up">
+                <div class="projects-headline">PROJECTS</div>
+                <span class="projects-count">004 entries</span>
+            </div>
+
+            <div class="projects-list">
+                <div class="project-item fade-up">
+                    <span class="project-index">// 001</span>
+                    <div class="project-title">MONTHLY<br>SHELL</div>
+                    <p class="project-desc">A free budgeting app for iPhone, iPad, Apple Watch and Mac, built around one number: what you actually have left this month. No bank login and no account — log an expense in seconds, scan receipts, and get an optional on-device AI coach. Your money data stays on your devices and is never tracked or sold, with an optional backup to your own iCloud.</p>
+                    <div class="project-tags">
+                        <span class="tag">iOS</span>
+                        <span class="tag">Personal Finance</span>
+                        <span class="tag">Privacy-First</span>
+                        <span class="tag">AI Coach</span>
+                    </div>
+                    <a class="project-link" href="https://apps.apple.com/app/id6799464054" target="_blank" rel="noopener">View on the App Store</a>
+                </div>
+
+                <div class="project-item fade-up">
+                    <span class="project-index">// 002</span>
+                    <div class="project-title">SENSORIQ</div>
+                    <p class="project-desc">An AI assistant that helps dental offices get clear, diagnostic-quality X-rays. Technicians describe the image problem in plain language; SensorIQ reasons from sensor physics and radiography principles to recommend baseline image settings, refines them with each round of feedback, and logs what worked.</p>
+                    <div class="project-tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">Claude API</span>
+                        <span class="tag">Streamlit</span>
+                        <span class="tag">Healthcare</span>
+                    </div>
+                    <a class="project-link" href="https://github.com/sigenyi/SensorIQ" target="_blank">View on GitHub</a>
+                </div>
+
+                <div class="project-item fade-up">
+                    <span class="project-index">// 003</span>
+                    <div class="project-title">VIDABYTE</div>
+                    <p class="project-desc">A free, bilingual digital-literacy platform: 60–90 second video lessons in Spanish and English, each paired with a plain-language article. Covers tech basics, AI, and digital safety for adults building job skills, seniors learning to spot scams, parents, and teachers.</p>
+                    <div class="project-tags">
+                        <span class="tag">EdTech</span>
+                        <span class="tag">Bilingual</span>
+                        <span class="tag">Video Production</span>
+                        <span class="tag">Social Media Strategy</span>
+                        <span class="tag">Analytics</span>
+                    </div>
+                    <a class="project-link" href="https://vidabyte.com/" target="_blank">Visit Site</a>
+                </div>
+
+                <div class="project-item fade-up">
+                    <span class="project-index">// 004</span>
+                    <div class="project-title">AI NEWS<br>AGENT</div>
+                    <p class="project-desc">An automated tool that curates and summarizes the latest developments in artificial intelligence. Pulls from multiple sources, filters by relevance, and surfaces what matters — without the noise.</p>
+                    <div class="project-tags">
+                        <span class="tag">AI Automation</span>
+                        <span class="tag">NLP</span>
+                        <span class="tag">Python</span>
+                        <span class="tag">News Aggregation</span>
+                    </div>
+                    <span class="project-wip-badge">Work in Progress</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <span class="footer-copy">© 2026 Joel Ramirez</span>
+        <div class="footer-status">
+            <div class="status-dot"></div>
+            All systems operational
+        </div>
+    </footer>
+
+    <script>
+        // Navigation
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const sections = document.querySelectorAll('.content-section');
+
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                navBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const target = btn.getAttribute('data-section');
+                sections.forEach(s => s.classList.remove('active'));
+                document.getElementById(target).classList.add('active');
+                window.scrollTo({ top: document.querySelector('nav').offsetTop, behavior: 'smooth' });
+                // trigger animations on switch
+                setTimeout(animateFadeUps, 50);
+                setTimeout(animateBars, 100);
+            });
+        });
+
+
+        // Fade-up observer
+        function animateFadeUps() {
+            document.querySelectorAll('.fade-up').forEach((el, i) => {
+                setTimeout(() => el.classList.add('visible'), i * 80);
+            });
+        }
+
+        // Skill bar animation
+        function animateBars() {
+            document.querySelectorAll('.skill-bar-fill').forEach(bar => {
+                bar.style.width = bar.getAttribute('data-width');
+            });
+        }
+
+        // Initial
+        animateFadeUps();
+        setTimeout(animateBars, 200);
+    </script>
+</body>
+</html>
